@@ -1,4 +1,4 @@
-*.py linguist-vendored
-*.html linguist-generated
-*.css linguist-generated
-*.js linguist-generated
+*.py linguist-detectable=true
+*.html linguist-detectable=false
+*.css linguist-detectable=false
+*.js linguist-detectable=false
