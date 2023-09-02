@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
+from vendor.models import Vendor
 
 # Restrict the vendor from accessing the customer page
 def check_role_vendor(user):
@@ -39,7 +40,7 @@ def registerUser(request):
             
             #send verification email
             mail_subject='Please activate your account'
-            email_tempalte='accounts/email/account_verification_email.html'
+            email_template='accounts/emails/account_verification_email.html'
             send_verification_email(request,user,mail_subject,email_template)
             messages.success(request,"An activation link is send to your email ")
 
@@ -68,6 +69,7 @@ def registerVendor(request):
             email=form.cleaned_data['email']
             password=form.cleaned_data['password']
             user=User.objects.create(first_name=first_name,last_name=last_name,username=username,email=email,password=password)
+            user.set_password(password)
             user.role=User.RESTAURANT
             user.save()
             vendor=v_form.save(commit=False)
@@ -78,7 +80,7 @@ def registerVendor(request):
             
             #send verification email
             mail_subject='Please activate your account'
-            email_tempalte='accounts/email/account_verification_email.html'
+            email_template='accounts/emails/account_verification_email.html'
             send_verification_email(request,user,mail_subject,email_template)
             
             messages.success(request," Your acccount has been registered successfully ! Please wait for the approval")
@@ -146,7 +148,11 @@ def custDashboard(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def vendorDashboard(request):
-    return render(request,'accounts/vendorDashboard.html')
+    vendor=Vendor.objects.get(user=request.user)
+    context={
+        'vendor':vendor,
+    }
+    return render(request,'accounts/vendorDashboard.html',context)
 
 
 def forgot_password(request):
@@ -157,7 +163,7 @@ def forgot_password(request):
             user=User.objects.get(email__exact=email)
             
             #send reset password email
-            mail_subject='Please activate your account'
+            mail_subject='Reset your password'
             email_template='accounts/emails/reset_password_email.html'
             send_verification_email(request,user,mail_subject,email_template)
            
