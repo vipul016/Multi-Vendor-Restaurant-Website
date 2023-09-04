@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from decouple import config
+from django import conf
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -55,7 +56,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-     'accounts.middlewares.AjaxMiddleware', 
+    'accounts.middlewares.AjaxMiddleware', 
+    'orders.request_object.RequestObjectMiddleware',
 ]
 
 ROOT_URLCONF = 'restaurtWebsite_main.urls'
@@ -177,3 +179,6 @@ GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'env\Lib\site-packages\osgeo\gdal304.
 PAYPAL_CLIENT_ID=config('PAYPAL_CLIENT_ID')
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
+
+RZP_KEY_ID=config('RZP_KEY_ID')
+RZP_KEY_SECRET=config('RZP_KEY_SECRET')
